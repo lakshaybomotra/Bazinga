@@ -25,6 +25,23 @@ Below are some screenshots of the Bazinga app in action:
 | ------------- |-------------|
 | <img src="https://raw.githubusercontent.com/lakshaybomotra/Bazinga/master/AppScreenshots/actorActivity-portrait.png" alt="Actor Activity" height="500"/>|<img src="https://raw.githubusercontent.com/lakshaybomotra/Bazinga/master/AppScreenshots/movieActivity-portrait.png" alt="Movie Activity" height="500"/>|
 
+## Widget Feature
+
+Bazinga also offers a convenient widget feature that allows you to keep your favorite stars close at hand. The widget displays the image and name of the last searched actor, providing quick and easy access right from your home screen.
+
+### Using the Widget
+
+- Long press on your home screen and select 'Widgets'.
+- Scroll to find the Bazinga widget and place it on your home screen.
+- The widget will automatically update with the last actor you searched for in the app.
+
+### Screenshot
+
+- Recent Widget
+<img src="https://raw.githubusercontent.com/lakshaybomotra/Bazinga/master/AppScreenshots/widget.png" alt="Widget" height="500"/>
+
+*Note: The widget display may vary based on your device and launcher.*
+
 ## Setup
 
 To set up the Bazinga app for development:
