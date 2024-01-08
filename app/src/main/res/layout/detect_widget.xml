@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Widget.Bazinga.AppWidget.Container"
+    android:layout_width="match_parent"
+    android:background="@color/trans"
+    android:layout_height="match_parent"
+    android:theme="@style/Theme.Bazinga.AppWidgetContainer">
+
+    <ImageView
+        android:id="@+id/logoViewWidget"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignStart="@+id/logo_bg_widget"
+        android:layout_alignTop="@+id/logo_bg_widget"
+        android:layout_alignEnd="@+id/logo_bg_widget"
+        android:layout_alignBottom="@+id/logo_bg_widget"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="30dp"
+        android:elevation="30dp"
+        android:src="@drawable/logo" />
+
+    <ImageView
+        android:id="@+id/logo_bg_widget"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/logo_circle" />
+
+    <!--        <ImageView-->
+    <!--            android:id="@+id/openGalleryWidget"-->
+    <!--            android:layout_width="80dp"-->
+    <!--            android:layout_height="80dp"-->
+    <!--            android:layout_gravity="center"-->
+    <!--            android:src="@drawable/gallery"-->
+    <!--            app:tint="@color/dull_purple" />-->
+
+    <!--        <ImageView-->
+    <!--            android:id="@+id/openCameraWidget"-->
+    <!--            android:layout_width="80dp"-->
+    <!--            android:layout_height="80dp"-->
+    <!--            android:layout_toEndOf="@id/openGalleryWidget"-->
+    <!--            android:layout_gravity="center"-->
+    <!--            android:src="@drawable/camera_svg"-->
+    <!--            app:tint="@color/dull_purple" />-->
+
+</RelativeLayout>

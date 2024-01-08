@@ -1,0 +1,50 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Widget.Bazinga.AppWidget.Container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/trans"
+    android:theme="@style/Theme.Bazinga.AppWidgetContainer">
+
+    <ImageView
+        android:id="@+id/noRecentActorImgWidget"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="false"
+        android:background="@drawable/widget_bg"
+        android:clipToOutline="true"
+        android:src="@drawable/nothing"
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/recentActorImgWidget"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="false"
+        android:background="@drawable/widget_bg"
+        android:clipToOutline="true"
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/widgetDeco"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        android:background="@drawable/widget_bg"
+        android:clipToOutline="true"
+        android:src="@drawable/grdnt_onbdg" />
+
+    <TextView
+        android:id="@+id/recentActorNameWidget"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+
+
+</RelativeLayout>
