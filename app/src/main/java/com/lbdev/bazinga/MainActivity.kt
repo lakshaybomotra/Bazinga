@@ -1,22 +1,24 @@
 package com.lbdev.bazinga
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.preference.PreferenceManager
-import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.analytics
 import com.lbdev.bazinga.onBoarding.IntroSlide
 import com.lbdev.bazinga.onBoarding.IntroSlideAdaptor
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var analytics: FirebaseAnalytics
 
     private val introSliderAdaptor = IntroSlideAdaptor(
         listOf(
@@ -43,7 +45,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var nextBtn: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
+        analytics = Firebase.analytics
 //        window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         super.onCreate(savedInstanceState)
         installSplashScreen()

@@ -6,26 +6,22 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
-import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
-import android.provider.MediaStore.Images.Media
 import android.util.Base64
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
-import androidx.lifecycle.lifecycleScope
-import coil.load
-import com.lbdev.bazinga.databinding.ActivityDetectBinding
+import com.bumptech.glide.Glide
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.analytics
 import com.lbdev.bazinga.api.ApiRequestBody
 import com.lbdev.bazinga.api.ApiService
 import com.lbdev.bazinga.api.PersonResponse
 import com.lbdev.bazinga.api.RetrofitInstance
+import com.lbdev.bazinga.databinding.ActivityDetectBinding
 import com.lbdev.bazinga.db.RecentBazingas
 import com.lbdev.bazinga.db.RecentBazingasDatabase
-import de.hdodenhof.circleimageview.BuildConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -38,37 +34,26 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.ByteArrayOutputStream
-import kotlin.properties.Delegates
 
 class DetectActivity : AppCompatActivity() {
-
+    private lateinit var analytics: FirebaseAnalytics
     private lateinit var viewBinding: ActivityDetectBinding
     lateinit var name: String
     lateinit var photoName: String
     var id: Int? = null
     lateinit var photoUrl: String
     private lateinit var myDB: RecentBazingasDatabase
+    private lateinit var tempImg: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityDetectBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
+        analytics = Firebase.analytics
 
         myDB = RecentBazingasDatabase.getDatabase(this)
-//        viewBinding.shimmerFrameLayout.startShimmer()
-//        val bitmap = intent.getParcelableExtra<Bitmap>("bitmap")
         photoName = intent.getStringExtra("name").toString()
         loadPhotosFromInternalStorage(photoName)
-//        val photoUri = intent.getStringExtra("photoUrl").toString()
-//        var photoBitmap: Bitmap? = null
-
-//        detectApiCall(bitmap!!, this)
-//        if (bitmap != null) {
-//            Toast.makeText(this, "not null", Toast.LENGTH_SHORT).show()
-//            detectApiCall(bitmap, this)
-//        } else {
-//            Toast.makeText(this, "null", Toast.LENGTH_SHORT).show()
-//        }
 
         viewBinding.actorBtn.setOnClickListener {
             val intent = Intent(this, ActorActivity::class.java)
@@ -103,28 +88,44 @@ class DetectActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         val responseBody = response.body()
                         if (responseBody != null) {
+                            Log.d("resultTest", "searchPerson: ${responseBody.results} ")
                             val firstPerson = responseBody.getFirstPerson()
                             id = firstPerson!!.id
-                            photoUrl =
-                                "https://image.tmdb.org/t/p/original" + firstPerson.profilePath
-                            viewBinding.testImg.load(photoUrl) {
-                                crossfade(true)
-                            }.apply {
+                            photoUrl = if (firstPerson.profilePath != null) {
+                                ("https://image.tmdb.org/t/p/original" + firstPerson.profilePath)
+                            } else {
+                                "data:image/png;base64,$tempImg"
+                            }
+                            Glide.with(this@DetectActivity)
+                                .load(photoUrl)
+                                .into(viewBinding.testImg)
+                                .apply {
                                 saveDetectedActor(id!!, photoUrl, firstPerson.name)
+                                    deletePhotoFromInternalStorage("$photoName.png")
                                 viewBinding.nameText.text = firstPerson.name
                                 viewBinding.shimmerFrameLayout.stopShimmer()
                                 viewBinding.shimmerFrameLayout.visibility = android.view.View.GONE
                                 viewBinding.detectMainLayout.visibility = android.view.View.VISIBLE
                             }
+                            logActorDetectedEvent(firstPerson.name, id!!)
                         } else {
-                            Log.e("RETROFIT_ERROR first else", "Response body is null")
+                            Toast.makeText(
+                                this@DetectActivity,
+                                "No Match Found",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            finish()
                         }
                     } else {
-                        Log.e("RETROFIT_ERROR second else", response.message())
+                        Toast.makeText(this@DetectActivity, "No Match Found", Toast.LENGTH_SHORT)
+                            .show()
+                        finish()
                     }
                 }
             } catch (e: Exception) {
-                Log.e("RETROFIT_ERROR exception", e.message ?: "Unknown error")
+                e.printStackTrace()
+                Toast.makeText(this@DetectActivity, "Network Error", Toast.LENGTH_SHORT).show()
+                finish()
             }
         }
     }
@@ -174,6 +175,7 @@ class DetectActivity : AppCompatActivity() {
                     if (!personList.isNullOrEmpty()) {
                         personList.forEach { person ->
                             name = person.name
+                            tempImg = person.thumbnails[0].thumbnail
                             searchPerson(person.name)
                         }
                     } else {
@@ -184,7 +186,6 @@ class DetectActivity : AppCompatActivity() {
                     Toast.makeText(context, "No Face Detected!!", Toast.LENGTH_SHORT).show()
                     finish()
                 }
-                deletePhotoFromInternalStorage("$photoName.png")
             }
 
             override fun onFailure(call: Call<List<PersonResponse>>, t: Throwable) {
@@ -214,6 +215,13 @@ class DetectActivity : AppCompatActivity() {
         detectApiCall(bmp, this)
     }
 
+    private fun logActorDetectedEvent(actorName: String, actorId: Int) {
+        val bundle = Bundle().apply {
+            putString("actor_name", actorName)
+            putInt("actor_id", actorId)
+        }
+        analytics.logEvent("actor_detected", bundle)
+    }
     companion object {
         private fun bitmapToBase64(bitmap: Bitmap): String {
             val byteArrayOutputStream = ByteArrayOutputStream()

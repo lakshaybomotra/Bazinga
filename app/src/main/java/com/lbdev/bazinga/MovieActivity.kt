@@ -10,11 +10,13 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.analytics
 import com.lbdev.bazinga.api.ApiService
 import com.lbdev.bazinga.databinding.ActivityMovieBinding
 import de.hdodenhof.circleimageview.CircleImageView
@@ -27,7 +29,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MovieActivity : AppCompatActivity() {
-
+    private lateinit var analytics: FirebaseAnalytics
     private var duration = 800L
     lateinit var viewBinding: ActivityMovieBinding
 
@@ -45,6 +47,7 @@ class MovieActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         viewBinding = ActivityMovieBinding.inflate(layoutInflater)
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+        analytics = Firebase.analytics
         findViewById<View>(android.R.id.content).transitionName = "EXTRA_VIEW"
         setEnterSharedElementCallback(MaterialContainerTransformSharedElementCallback())
         window.sharedElementEnterTransition = buildContainerTransform(true)

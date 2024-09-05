@@ -3,18 +3,17 @@ package com.lbdev.bazinga
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
+import com.bumptech.glide.Glide
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.analytics
 import com.lbdev.bazinga.adaptors.ActorMoviesAdaptor
 import com.lbdev.bazinga.api.ApiService
 import com.lbdev.bazinga.databinding.ActivityActorBinding
@@ -29,6 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class ActorActivity : AppCompatActivity() {
+    private lateinit var analytics: FirebaseAnalytics
     lateinit var viewBinding: ActivityActorBinding
     lateinit var actorMoviesAdaptor: ActorMoviesAdaptor
     lateinit var rvMain: RecyclerView
@@ -49,6 +49,7 @@ class ActorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityActorBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
+        analytics = Firebase.analytics
         viewBinding.miShimmerFrameLayout.startShimmer()
         val id = intent.getIntExtra("id", 0)
         photoUrl = intent.getStringExtra("photoUrl").toString()
@@ -88,7 +89,9 @@ class ActorActivity : AppCompatActivity() {
                                 )
                                 viewBinding.actorBirth.text = birth
                             }
-                            viewBinding.actorImage.load( "https://image.tmdb.org/t/p/w500"+photoUrl)
+                            Glide.with(this@ActorActivity)
+                                .load(photoUrl)
+                                .into(viewBinding.actorImage)
 
                             if (personResponseBody.biography == "") {
                                 viewBinding.aboutText.visibility = View.GONE

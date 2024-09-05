@@ -4,7 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
-    private const val BASE_URL = "https://us.opencv.fr/" // Update the base URL
+    private const val BASE_URL = "https://sg.opencv.fr/" // Update the base URL
     private const val FIND_MOVIES_URL = "https://api.themoviedb.org/3/person/"
 
     val api: ApiService by lazy {
